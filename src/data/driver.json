@@ -1,16 +1,20 @@
 [
   {
     "id": 1,
-    "name": "Ali",
+    "Name": "Ali",
     "email": "ali@GMAIL.COM",
     "phone":"011256489",
-    "address":"aswan aswan narty"
+    "address":"aswan aswan narty",
+    "vehicleType":"toyota",
+   "isAvailable":true
   },
   {
     "id": 2,
-    "name": "Ali",
+    "Name": "Ali",
     "email": "ali@GMAIL.COM",
     "phone":"011256489",
-    "address":"aswan aswan narty"
+    "address":"aswan aswan narty",
+    "vehicleType":"mercedes",
+   "isAvailable":true
   }
 ]
