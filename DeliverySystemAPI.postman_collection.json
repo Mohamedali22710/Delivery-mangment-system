@@ -126,6 +126,56 @@
           "path": ["driver", "<DRIVER_ID>"]
         }
       }
+    },
+    {
+      "name": "Profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer <TOKEN>" }
+        ],
+        "url": {
+          "raw": "http://localhost:4000/auth/profile",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["auth", "profile"]
+        }
+      }
+    },
+    {
+      "name": "Get All Shipments",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4000/shipments",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["shipments"]
+        }
+      }
+    },
+    {
+      "name": "Create Shipment",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sender\": \"sender name\",\n  \"receiver\": \"receiver name\",\n  \"pickupAddress\": \"address 1\",\n  \"deliveryAddress\": \"address 2\",\n  \"status\": \"pending\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:4000/shipments",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["shipments"]
+        }
+      }
     }
   ]
 }
