@@ -5,10 +5,16 @@ const shipmentSchema = new mongoose.Schema({
  receiver: String,
  pickupAddress: String,
  deliveryAddress: String,
- status: {
-  type: String,
-  default: "pending"
- }
+ 
+driver: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Driver"
+},
+status: {
+    type: String,
+    enum: ["pending", "assigned", "in-transit", "delivered"],
+    default: "pending"
+}
 });
 
 module.exports = mongoose.model("shipment", shipmentSchema);
