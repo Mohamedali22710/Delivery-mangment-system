@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const userRole = require("../../../utils/UserRole");
+const { string } = require("joi");
 const userSchema = new mongoose.Schema({
     
     name:{
@@ -32,8 +33,12 @@ const userSchema = new mongoose.Schema({
     },
     token:{
         type:String
-    }
+    },
+    avatar:{
+        type:String,
+        
 
+    }
 },{
     timestamps:true
 })

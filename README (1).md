@@ -29,6 +29,17 @@ Built with:
 
 ------------------------------------------------------------------------
 
+## 🚀 What does this project do?
+
+- User registration, login, logout, and profile management (with validation and JWT authentication)
+- Driver management (add, list, update, delete drivers; admin-only access)
+- Shipments management (create, list, get by ID, update, partial update; admin-only for create/update)
+- Role-based access control (admin/driver)
+- Data validation for all main endpoints
+- Centralized error handling
+- Modular, scalable code structure (MVC, separated modules)
+- Ready for API testing with a full Postman collection
+
 # 🏗️ Architecture
 
 The project follows:

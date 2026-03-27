@@ -4,7 +4,7 @@ const asyncWrapper = require("../../../middlewares/errormiddl");
 const AppError = require("../../../utils/AppError");
 const httpStat = require("../../../utils/httpStatustext");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+
 const generateToken = require("../../../utils/generateToken");
 
 const Register = asyncWrapper(async (req, res, next) => {
@@ -29,7 +29,7 @@ const Register = asyncWrapper(async (req, res, next) => {
         name,
         email,
         password: hashedPassword,
-        role
+        role,
     });
 
 

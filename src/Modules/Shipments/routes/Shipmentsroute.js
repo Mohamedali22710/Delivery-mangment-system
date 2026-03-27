@@ -20,4 +20,11 @@ router.put("/shipments/:id",verifyToken,allowedto(userRole.Admin),createShipment
 
 router.patch("/shipments/:id",verifyToken,allowedto(userRole.Admin),createShipmentValidator, validate,shipmentController.partialUpdateShipment);
 
+router.put(
+    "/:id/assign/:driverId",
+    verifyToken,
+    allowedto("admin"),
+    assignShipment
+);
+
 module.exports = router;
