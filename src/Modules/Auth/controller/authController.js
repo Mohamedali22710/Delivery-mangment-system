@@ -57,7 +57,19 @@ const Register = asyncWrapper(async (req, res, next) => {
 
 
 
-    res.status(201).json({ status: httpStat.success, data: newUser });
+    // res.status(201).json({ status: httpStat.success, data: newUser });
+    res.status(201).json({
+  status: httpStat.success,
+  data: {
+    token,
+    user: {
+      id: newUser._id,
+      name: newUser.name,
+      email: newUser.email,
+      role: newUser.role
+    }
+  }
+});
 })
 
 const login = asyncWrapper(async (req, res, next) => {
@@ -68,7 +80,7 @@ const login = asyncWrapper(async (req, res, next) => {
         return next(error);
     }
 
-    const user = await userModel.findOne({ email: email });
+    const user = await userModel.findOne({ email: email }).select("+password");
 
     if (!user) {
         const error = AppError.create("user not found", 400, httpStat.fail);
@@ -77,20 +89,27 @@ const login = asyncWrapper(async (req, res, next) => {
 
     const matchPassword = await bcrypt.compare(password, user.password);
 
-    if (! matchPassword) {
-const error = AppError.create("not match ", 400, httpStat.error);
+    if (!matchPassword) {
+        const error = AppError.create("not match ", 400, httpStat.error);
         return next(error);
-      
-    } 
-  const token = await generateToken({ email: user.email, id: user._id, role: user.role })
 
-        res.status(201).json({ status: httpStat.success, data: token })
+    }
+    const token = await generateToken({ email: user.email, id: user._id, role: user.role })
+
+    res.status(201).json({
+        status: httpStat.success, data: token, user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role
+        }
+    })
 })
 
 const logout = asyncWrapper(
     async (req, res) => {
         try {
-            
+
             await userModel.findByIdAndUpdate(req.user._id, { status: "offline", });
             return res.status(200).json({ msg: "You loged out" });
 
@@ -102,7 +121,7 @@ const logout = asyncWrapper(
 
 )
 
-const GETProfile=asyncWrapper(async(req,res,next)=>{
+const GETProfile = asyncWrapper(async (req, res, next) => {
     res.status(200).json({
         status: "success",
         data: {

@@ -133,9 +133,9 @@ export default function Register() {
     </p>
   )}
      {/* err msg from back */}
-                {error && (
+                {fieldErrors.phone && (
         <p className="text-red-500 text-sm mt-2 font-bold">
-          {fieldErrors.email}
+          {fieldErrors.phone}
         </p>
       )}
 </div>
@@ -152,9 +152,9 @@ export default function Register() {
               />
               {errors.email && <p className="text-red-500 text-xs mt-2 font-bold uppercase tracking-tighter">{errors.email.message}</p>}
               {/* err msg from back */}
-                {error && (
+                {fieldErrors.email && (
         <p className="text-red-500 text-sm mt-2 font-bold">
-          {fieldErrors.phone}
+          {fieldErrors.email}
         </p>
       )}
 
@@ -174,7 +174,7 @@ export default function Register() {
                   placeholder="••••••••" 
                 />
                    {/* err msg from back */}
-                {error && (
+                {fieldErrors.password && (
         <p className="text-red-500 text-sm mt-2 font-bold">
           {fieldErrors.password}
         </p>
@@ -231,7 +231,7 @@ export default function Register() {
     </p>
   )}
      {/* err msg from back */}
-                {error && (
+                {fieldErrors.licenseNumber && (
         <p className="text-red-500 text-sm mt-2 font-bold">
           {fieldErrors.licenseNumber}
         </p>

@@ -1,21 +1,21 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { loginService, registerService, getProfileService } from "./authService";
 
-// 🔐 LOGIN
+//  LOGIN
 export const loginUser = createAsyncThunk(
   "auth/login",
   async (data, thunkAPI) => {
     try {
       const res = await loginService(data);
-      localStorage.setItem("token", res.data);
-      return res.data;
+      localStorage.setItem("token", res.token);
+      return res;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response?.data);
     }
   }
 );
 
-// 📝 REGISTER
+//  REGISTER
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (data, thunkAPI) => {
@@ -49,7 +49,7 @@ const authSlice = createSlice({
     token: localStorage.getItem("token"),
     loading: false,
     error: null,
-    fieldErrors: {}, // ✅ هنا هنخزن الأخطاء لكل فيلد
+    fieldErrors: {}, 
   },
   reducers: {
     logout: (state) => {
@@ -66,11 +66,19 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.token = action.payload;
+        state.token = action.payload.token;
+        state.user=action.payload.user;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.error || action.error?.message;
+       const MsgError=action.payload?.error || "login field";
+       if(MsgError.includes("email")){
+        state.fieldErrors.email=MsgError;
+       }else if(MsgError.includes("password")){
+        state.fieldErrors.password=MsgError;
+       }else{
+        state.error=MsgError;
+       }
       })
 
       // REGISTER
@@ -87,7 +95,7 @@ const authSlice = createSlice({
         state.loading = false;
         const errorMsg = action.payload?.error || "Registration failed";
 
-        // توزيع الرسالة على الفيلد المناسب
+       
         if (errorMsg.includes("vehicleType")) {
           state.fieldErrors.vehicleType = errorMsg;
         } else if (errorMsg.includes("licenseNumber")) {

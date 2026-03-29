@@ -8,7 +8,7 @@ export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const { token, user, loading } = useSelector((s) => s.auth);
+  const { token, user, loading, fieldErrors } = useSelector((s) => s.auth);
 
   const onSubmit = (data) => dispatch(loginUser(data));
 
@@ -42,11 +42,23 @@ export default function Login() {
               <label className="block text-sm font-bold text-slate-700 mb-1">Email Address</label>
               <input {...register("email", { required: "Email required" })} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="name@company.com" />
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+                  {/* err msg from back */}
+                {fieldErrors.email && (
+        <p className="text-red-500 text-sm mt-2 font-bold">
+          {fieldErrors.email}
+        </p>
+      )}
             </div>
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-1">Password</label>
               <input type="password" {...register("password", { required: "Password required" })} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="••••••••" />
               {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
+                  {/* err msg from back */}
+                {fieldErrors.password && (
+        <p className="text-red-500 text-sm mt-2 font-bold">
+          {fieldErrors.password}
+        </p>
+      )}
             </div>
             <button className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition">
               {loading ? "Authenticating..." : "Login to Account"}

@@ -1,6 +1,9 @@
 import Navbar from "../components/NAvbar";
 import Hero from "../components/Hero";
-// نفذ نفس الفكرة لباقي السكاشن (Stats, Features, etc.)
+import Stats from "../components/Stats";
+import Features from "../components/Features";
+import HowItWorks from "../components/HowitWork";
+import Testimonials from "../components/Testimonials";
 // import Footer from "../components/Footer";
 
 export default function Home() {
@@ -9,7 +12,10 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero />
-        
+        <Stats/>
+        <Features/>
+        <HowItWorks/>
+        <Testimonials/>
       </main>
      
     </div>
