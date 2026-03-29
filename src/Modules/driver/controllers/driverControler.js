@@ -22,21 +22,39 @@ getDriverAll = async (req, res) => {
 };
 
 //!add
-addDriver = asyncWrapper( async (req, res,next) => {
+// addDriver = asyncWrapper( async (req, res,next) => {
 
 
-    // const draiverreq = { ...req.body };
-    //creat in body in postman req and save it in db 
-    const newDriver = await driverModel.create(req.body);
+//     // const draiverreq = { ...req.body };
+//     //creat in body in postman req and save it in db 
+//     const newDriver = await driverModel.create(req.body);
+//     if (!req.body) {
+//         const Error= appError.create(null,400,httpStat.fail);
+//         return next(Error);
+//     }
+//     // driverdb.push(draiverreq);
+//     await newDriver.save();
+//     res.status(200).json({ status: httpStat.success, data: { newDriver } });
+
+// })
+//!add=>DEISHA
+addDriver = async (req, res) => {
+    const io = req.app.get("io"); // socket
+
+    const newDriver = new driverModel(req.body);
     if (!req.body) {
-        const Error= appError.create(null,400,httpStat.fail);
-        return next(Error);
+        return res.status(400).json({ status: httpStat.fail, data: null });
     }
-    // driverdb.push(draiverreq);
     await newDriver.save();
-    res.status(200).json({ status: httpStat.success, data: { newDriver } });
 
-})
+    //  Socket emit لكل room الخاص بالـ driver الجديد
+    io.to(newDriver._id.toString()).emit("driverUpdated", {
+        driverId: newDriver._id,
+        data: newDriver
+    });
+
+    res.status(200).json({ status: httpStat.success, data: { newDriver } });
+}
 
 getDriverId = asyncWrapper(async (req, res, next) => {
 

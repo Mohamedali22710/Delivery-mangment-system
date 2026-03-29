@@ -11,6 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use("/driver", driverRoutes);
 app.use("/api/auth", AuthRout);
+app.use("/", Shipmentsroute);
 
 app.use("/Uploads",express.static(path.join(__dirname,'Uploads')))
 

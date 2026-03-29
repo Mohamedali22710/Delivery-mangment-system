@@ -18,10 +18,10 @@ router.get("/shipments/:id", shipmentController.getShipmentById);
 router.put("/shipments/:id",verifyToken,allowedto(userRole.Admin),createShipmentValidator,validate,shipmentController.updateShipment);
 
 
-router.patch("/shipments/:id",verifyToken,allowedto(userRole.Admin),createShipmentValidator, validate,shipmentController.partialUpdateShipment);
+router.patch("/shipments/:id",verifyToken,allowedto(userRole.Admin, userRole.driver),shipmentController.partialUpdateShipment);
 
 router.put(
-    "/:id/assign/:driverId",
+    "/shipments/:id/assign/:driverId",
     verifyToken,
     allowedto("admin"),
     shipmentController.assignShipment

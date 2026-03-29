@@ -6,6 +6,8 @@ import Register from "../Pages/Register";
 
 
 import ProtectedRoute from "../components/ProtectedRoute";
+import AdminDashboard from "../Pages/AdminDashboard";
+import DriverDashboard from "../Pages/DriverDashboard";
 
 export default function AppRouter() {
   return (
@@ -15,23 +17,23 @@ export default function AppRouter() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* <Route
+        <Route
           path="/dashboard"
           element={
             <ProtectedRoute role="admin">
-              <Dashboard />
+              <AdminDashboard />
             </ProtectedRoute>
           }
-        /> */}
+        />
 
-        {/* <Route
+        <Route
           path="/driver"
           element={
             <ProtectedRoute role="driver">
-              <Driver />
+              <DriverDashboard />
             </ProtectedRoute>
           }
-        /> */}
+        />
       </Routes>
     </BrowserRouter>
   );
