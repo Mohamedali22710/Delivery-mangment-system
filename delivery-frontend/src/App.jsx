@@ -8,6 +8,7 @@ import Home from './Pages/Home'
 import { store } from "./store.js";
 import { Provider } from "react-redux";
 import AppRouter from "./routes/Approutes.jsx";
+import Dashboard from './features/Shipment/shipmentService.js';
 function App() {
   // const [count, setCount] = useState(0)
 
@@ -17,7 +18,9 @@ function App() {
 
      <Provider store={store}>
       <AppRouter />
+      <Dashboard/>
     </Provider>
+   
     </>
   )
 }

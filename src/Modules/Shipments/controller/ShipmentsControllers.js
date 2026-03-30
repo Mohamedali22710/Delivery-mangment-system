@@ -1,116 +1,87 @@
-const Shipment = require("../model/Shipmentsmodel");
+const Shipment = require('../model/Shipmentsmodel');
+const httpStat = require('../../../utils/httpStatustext');
 
-const asyncWrapper = require("../../../middlewares/errormiddl")
 exports.createShipment = async (req, res) => {
-  try {
-    const shipment = await Shipment.create(req.body);
-    res.status(201).json(shipment);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+    const io = req.app.get('io');
+    try {
+        if (!req.body) return res.status(400).json({ status: httpStat.fail, data: null });
 
+        const newShipment = new Shipment(req.body);
+        await newShipment.save();
+
+        io.to(newShipment._id.toString()).emit('shipmentUpdated', {
+            shipmentId: newShipment._id,
+            data: newShipment
+        });
+
+        res.status(201).json({ status: httpStat.success, data: newShipment });
+    } catch (err) {
+        res.status(500).json({ status: httpStat.error, message: err.message });
+    }
+};
 
 exports.getAllShipments = async (req, res) => {
-  try {
-    const shipments = await Shipment.find();
-    res.json(shipments);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+    try {
+        const shipments = await Shipment.find({}, { __v: 0 });
+        res.status(200).json({ status: httpStat.success, data: shipments });
+    } catch (err) {
+        res.status(500).json({ status: httpStat.error, message: err.message });
+    }
 };
-
 
 exports.getShipmentById = async (req, res) => {
-  try {
-    const shipment = await Shipment.findById(req.params.id);
-    if (!shipment) return res.status(404).json({ message: "Shipment not found" });
-    res.json(shipment);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+    try {
+        const shipment = await Shipment.findById(req.params.id);
+        if (!shipment) return res.status(404).json({ status: httpStat.fail, data: null });
+        res.status(200).json({ status: httpStat.success, data: shipment });
+    } catch (err) {
+        res.status(400).json({ status: httpStat.error, message: err.message });
+    }
 };
-
 
 exports.updateShipment = async (req, res) => {
-  try {
-    const shipment = await Shipment.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
+    const io = req.app.get('io');
+    try {
+        const shipment = await Shipment.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!shipment) return res.status(404).json({ status: httpStat.fail, data: null });
 
-    if (!shipment) {
-      return res.status(404).json({ message: "Shipment not found" });
+        io.to(shipment._id.toString()).emit('shipmentUpdated', { shipmentId: shipment._id, updates: req.body });
+
+        res.status(200).json({ status: httpStat.success, data: shipment });
+    } catch (err) {
+        res.status(400).json({ status: httpStat.error, message: err.message });
     }
-
-    res.json(shipment);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
 };
-
 
 exports.partialUpdateShipment = async (req, res) => {
-  try {
-    const shipment = await Shipment.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
+    const io = req.app.get('io');
+    try {
+        const shipment = await Shipment.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true });
+        if (!shipment) return res.status(404).json({ status: httpStat.fail, data: null });
 
-    if (!shipment) {
-      return res.status(404).json({ message: "Shipment not found" });
+        io.to(shipment._id.toString()).emit('shipmentUpdated', { shipmentId: shipment._id, updates: req.body });
+
+        res.status(200).json({ status: httpStat.success, data: shipment });
+    } catch (err) {
+        res.status(400).json({ status: httpStat.error, message: err.message });
     }
-
-    res.json(shipment);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
 };
 
-//assign
-exports.assignShipment = asyncWrapper(async (req, res, next) => {
+exports.assignShipment = async (req, res) => {
+    const io = req.app.get('io');
     const { id, driverId } = req.params;
 
-   
-    const shipment = await shipmentModel.findById(id);
-    if (!shipment) {
-        return next(AppError.create("Shipment not found", 404));
+    try {
+        const shipment = await Shipment.findByIdAndUpdate(id, { driver: driverId, status: "assigned" }, { new: true });
+        if (!shipment) return res.status(404).json({ status: httpStat.fail, data: null });
+
+        io.to(shipment._id.toString()).emit('shipmentUpdated', {
+            shipmentId: shipment._id,
+            updates: { driver: driverId, status: "assigned" }
+        });
+
+        res.status(200).json({ status: httpStat.success, data: shipment });
+    } catch (err) {
+        res.status(400).json({ status: httpStat.error, message: err.message });
     }
-
-   
-    if (shipment.driver) {
-        return next(AppError.create("Shipment already assigned", 400));
-    }
-
-   
-    const driver = await driverModel.findById(driverId);
-    if (!driver) {
-        return next(AppError.create("Driver not found", 404));
-    }
-
-  
-    if (!driver.isAvailable) {
-        return next(AppError.create("Driver not available", 400));
-    }
-
-
-    shipment.driver = driverId;
-    shipment.status = "assigned";
-
-
-    driver.isAvailable = false;
-
-    
-    await shipment.save();
-    await driver.save();
-
-    res.status(200).json({
-        status: "success",
-        message: "Shipment assigned successfully",
-        data: {
-            shipment
-        }
-    });
-});
+};
