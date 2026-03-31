@@ -16,9 +16,19 @@ app.all(/.*/, (req, res, next) => {
 
 
 //GLOBAL MIDDLEWARES FOR logic
+// app.use((error, req, res, next) => {
+//     res.status(error.statusCode || 500).json({ status: error.Statustext || httpStat.error, massage: error.massage, code: error.statusCode || 500, data: null })
+// })
+
 app.use((error, req, res, next) => {
-    res.status(error.statusCode || 500).json({ status: error.Statustext || httpStat.error, massage: error.massage, code: error.statusCode || 500, data: null })
-})
+  console.error("Global error handler:", error); 
+  res.status(error.statusCode || 500).json({
+    status: error.statusText || httpStat.error, 
+    message: error.message, 
+    code: error.statusCode || 500,
+    data: null
+  });
+});
 
 const port = process.env.PORT || 4000;
 console.log(process.env.PORT);

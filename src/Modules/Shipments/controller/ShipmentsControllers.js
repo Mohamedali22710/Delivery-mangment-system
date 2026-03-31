@@ -39,7 +39,7 @@ exports.updateShipment = async (req, res) => {
       req.params.id,
       req.body,
       { new: true, runValidators: true }
-    );
+    ).populate("driver", "name phone isAvailable");
 
     if (!shipment) {
       return res.status(404).json({ message: "Shipment not found" });
@@ -107,7 +107,7 @@ exports.assignShipment = asyncWrapper(async (req, res, next) => {
 });
 exports.getShipmentsByDriver = async (req, res) => {
   try {
-    const shipments = await Shipment.find({ driver: req.params.driverId });
+    const shipments = await Shipment.find({ driver: req.params.driverId }).populate("driver", "name phone isAvailable");
     res.json({ status: "success", data: shipments });
   } catch (error) {
     res.status(500).json({ message: error.message });

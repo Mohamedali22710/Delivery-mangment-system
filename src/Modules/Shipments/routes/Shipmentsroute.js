@@ -21,7 +21,6 @@ router.post(
 router.get("/", shipmentController.getAllShipments);
 
 
-router.get("/:id", shipmentController.getShipmentById);
 
 
 router.put(
@@ -30,6 +29,13 @@ router.put(
   allowedto(userRole.Admin),
   validate(shipmentSchema),
   shipmentController.updateShipment
+);
+
+router.get(
+  "/:id",
+  verifyToken,
+  allowedto(userRole.Admin, userRole.driver),
+  shipmentController.getShipmentById
 );
 
 
